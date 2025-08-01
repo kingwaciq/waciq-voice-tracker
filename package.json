@@ -7,6 +7,6 @@
   },
   "dependencies": {
     "telegraf": "^4.16.2",
-    "formidable": "^3.5.0"
+    "formidable-serverless": "^0.1.3"
   }
 } 

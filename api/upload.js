@@ -1,5 +1,5 @@
 import { Telegraf } from 'telegraf';
-import formidable from 'formidable-serverless';
+import formidable from 'formidable';
 import fs from 'fs';
 
 const bot = new Telegraf(process.env.BOT_TOKEN);
@@ -13,7 +13,7 @@ export const config = {
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).send("Only POST allowed");
 
-  const form = new formidable.IncomingForm();
+  const form = formidable({ multiples: false });
 
   form.parse(req, async (err, fields, files) => {
     if (err) {

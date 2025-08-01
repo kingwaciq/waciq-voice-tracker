@@ -16,7 +16,7 @@ export default async function handler(req, res) {
   const form = formidable({
     multiples: false,
     keepExtensions: true,
-    uploadDir: '/tmp', // Vercel only allows writing to /tmp
+    uploadDir: '/tmp', // Only writable dir on Vercel
   });
 
   form.parse(req, async (err, fields, files) => {
@@ -34,8 +34,10 @@ export default async function handler(req, res) {
         return res.status(400).send("❌ Missing uid or voice file");
       }
 
-      // Get file path
-      const voicePath = voiceFile.filepath || voiceFile.path;
+      // 🛠 Handle array or single object
+      const fileObj = Array.isArray(voiceFile) ? voiceFile[0] : voiceFile;
+      const voicePath = fileObj?.filepath || fileObj?.path;
+
       if (!voicePath) {
         console.error("❌ No valid file path found in voiceFile:", voiceFile);
         return res.status(500).send("❌ Invalid voice file path");

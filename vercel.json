@@ -1,5 +1,10 @@
 {
-  "rewrites": [
-    { "source": "/api/upload", "destination": "/api/upload.js" }
+  "version": 2,
+  "builds": [
+    { "src": "api/upload.js", "use": "@vercel/node" },
+    { "src": "public/index.html", "use": "@vercel/static" }
+  ],
+  "routes": [
+    { "src": "/api/upload", "dest": "/api/upload.js" }
   ]
 } 

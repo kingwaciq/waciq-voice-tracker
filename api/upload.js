@@ -7,13 +7,17 @@ const bot = new Telegraf(process.env.BOT_TOKEN);
 export const config = {
   api: {
     bodyParser: false,
-  }
+  },
 };
 
 export default async function handler(req, res) {
   if (req.method !== 'POST') return res.status(405).send("Only POST allowed");
 
-  const form = formidable({ multiples: false });
+  const form = formidable({
+    multiples: false,
+    keepExtensions: true,
+    uploadDir: '/tmp', // Vercel only allows writing to /tmp
+  });
 
   form.parse(req, async (err, fields, files) => {
     if (err) {
@@ -30,6 +34,13 @@ export default async function handler(req, res) {
         return res.status(400).send("❌ Missing uid or voice file");
       }
 
+      // Get file path
+      const voicePath = voiceFile.filepath || voiceFile.path;
+      if (!voicePath) {
+        console.error("❌ No valid file path found in voiceFile:", voiceFile);
+        return res.status(500).send("❌ Invalid voice file path");
+      }
+
       const caption = 
 `🎤 *New Voice Received!*
 
@@ -41,9 +52,9 @@ export default async function handler(req, res) {
 
 🧑🏻‍💻 Built By: *WACIQ*`;
 
-      await bot.telegram.sendVoice(uid, { source: fs.createReadStream(voiceFile.filepath) }, {
+      await bot.telegram.sendVoice(uid, { source: fs.createReadStream(voicePath) }, {
         caption,
-        parse_mode: 'Markdown'
+        parse_mode: 'Markdown',
       });
 
       return res.status(200).send("✅ Voice delivered");

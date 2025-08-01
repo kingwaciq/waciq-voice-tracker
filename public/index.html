@@ -2,15 +2,53 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>🎤 Voice Recorder</title>
+  <title>🎙 Voice Access Panel</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <style>
+    body {
+      background: url('https://i.postimg.cc/0NpsLGXh/Screenshot-2025-0730-102754.jpg') center/cover no-repeat;
+      color: #fff;
+      font-family: Arial, sans-serif;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      backdrop-filter: blur(5px);
+    }
+
+    .panel {
+      background: rgba(0, 0, 0, 0.7);
+      padding: 30px;
+      border-radius: 20px;
+      text-align: center;
+      max-width: 90%;
+    }
+
+    button {
+      padding: 12px 24px;
+      font-size: 16px;
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      background-color: gold;
+      color: black;
+      font-weight: bold;
+    }
+
+    .status {
+      margin-top: 20px;
+      font-size: 18px;
+    }
+  </style>
 </head>
 <body>
-  <h2>🎤 وایس ثبت او واستوه</h2>
-  <button onclick="startRecording()">▶️ ثبت پېل</button>
-  <button onclick="stopRecording()">⏹️ ثبت بند</button>
-  <p id="status">⏳...</p>
+  <div class="panel">
+    <h1>🎙 Voice Access Panel</h1>
+    <button id="recordBtn">🎤 Start Recording</button>
+    <div class="status" id="status">Waiting...</div>
+  </div>
 
-  <script src="/recorder.js"></script>
+  <script src="recorder.js"></script>
 </body>
 </html> 
